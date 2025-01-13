@@ -2,6 +2,7 @@ package main
 
 import (
 	"cvwo-winter-assignment/database"
+	"cvwo-winter-assignment/handlers"
 	"cvwo-winter-assignment/initialize"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,7 @@ func main() {
 		c.String(200, "Welcome to the Forum API!")
 	})
 
+	router.POST("/signup", handlers.Signup)
 	fmt.Printf("Server running on http://localhost:%v", os.Getenv("PORT"))
 
 	err := router.Run()

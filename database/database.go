@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-var conn *pgx.Conn
+var Conn *pgx.Conn
 
 func ConnectToDB() {
 	host := os.Getenv("DB_HOST")
@@ -19,12 +19,15 @@ func ConnectToDB() {
 
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", user, password, host, port, database)
 	var err error
-	conn, err = pgx.Connect(context.Background(), dsn)
+	Conn, err = pgx.Connect(context.Background(), dsn)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	defer conn.Close(context.Background())
+	/*
+		Commented till i figure out how to stop it from closing immediately
+	*/
+	//defer Conn.Close(context.Background())
 
 	log.Println("Connected to the database!")
 }
