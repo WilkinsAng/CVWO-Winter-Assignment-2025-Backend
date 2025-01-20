@@ -11,4 +11,5 @@ type Thread struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 	Likes       int       `json:"likes"`
 	Dislikes    int       `json:"dislikes"`
+	Category    string    `json:"category"`
 }

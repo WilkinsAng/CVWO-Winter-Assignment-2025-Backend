@@ -36,7 +36,7 @@ func main() {
 	// Thread CRUD Routes
 	router.POST("/threads", middleware.AuthMiddleware(), threads.CreateThread)
 	router.GET("/threads", threads.GetAllThreads)
-	//router.GET("/threads/:id", threads.GetThreadByID)
+	router.GET("/threads/:id", threads.GetThreadByID)
 	//router.PUT("/threads/:id", threads.UpdateThread)
 	//router.DELETE("/threads/:id", threads.DeleteThread)
 
