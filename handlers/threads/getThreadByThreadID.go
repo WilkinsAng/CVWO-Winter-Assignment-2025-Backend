@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func GetThreadByID(c *gin.Context) {
+func GetThreadByThreadID(c *gin.Context) {
 	id := c.Param("id")
 	threadID, err := strconv.Atoi(id)
 	if err != nil {
@@ -23,7 +23,7 @@ func GetThreadByID(c *gin.Context) {
 					c.name AS category 
 					FROM threads t
 					LEFT JOIN categories c ON t.category_id = c.id	
-                    WHERE user_id = $1`
+                    WHERE t.id = $1`
 
 	err = database.Conn.QueryRow(context.Background(), threadQuery, threadID).Scan(&thread.ID, &thread.Title, &thread.Description,
 		&thread.UserID, &thread.CreatedAt, &thread.UpdatedAt, &thread.Likes, &thread.Dislikes, &thread.Category)

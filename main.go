@@ -36,9 +36,9 @@ func main() {
 	// Thread CRUD Routes
 	router.POST("/threads", middleware.AuthMiddleware(), threads.CreateThread)
 	router.GET("/threads", threads.GetAllThreads)
-	router.GET("/threads/:id", threads.GetThreadByID)
-	//router.PUT("/threads/:id", threads.UpdateThread)
-	//router.DELETE("/threads/:id", threads.DeleteThread)
+	router.GET("/threads/:id", threads.GetThreadByThreadID)
+	router.PATCH("/threads/:id", middleware.AuthMiddleware(), threads.UpdateThread)
+	//router.DELETE("/threads/:id", middleware.AuthMiddleware(), threads.DeleteThread)
 
 	fmt.Printf("Server running on http://localhost:%v", os.Getenv("PORT"))
 

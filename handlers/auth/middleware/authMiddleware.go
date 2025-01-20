@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -13,7 +14,12 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("userID", userID)
+		userIntID, err := strconv.Atoi(userID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid userID format"})
+			return
+		}
+		c.Set("userID", userIntID)
 		c.Next()
 	}
 }
