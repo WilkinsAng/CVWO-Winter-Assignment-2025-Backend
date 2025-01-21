@@ -9,24 +9,9 @@ import (
 	"strconv"
 )
 
-func UpdateThread(c *gin.Context) {
-	var request struct {
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		CategoryID  int    `json:"category_id"`
-	}
-
+func DeleteThread(c *gin.Context) {
 	id := c.Param("id")
 	threadID, err := strconv.Atoi(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err = c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 
 	userID, exists := c.Get("userID")
 	if !exists {
@@ -51,18 +36,14 @@ func UpdateThread(c *gin.Context) {
 		}
 	}
 	/*
-		Updating thread
+		Comments are set to delete by cascade as well
 	*/
-
-	query :=
-		`UPDATE threads 
-		 SET title = $1, description = $2, category_id = $3, updated_at = NOW()
-		 WHERE id = $4`
-
-	_, err = database.Conn.Exec(context.Background(), query, request.Title, request.Description, request.CategoryID, threadID)
+	query := `DELETE FROM threads WHERE id = $1`
+	_, err = database.Conn.Exec(context.Background(), query, threadID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to delete thread", "error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"message": "Updated thread successfully!."})
+
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully deleted thread"})
 }

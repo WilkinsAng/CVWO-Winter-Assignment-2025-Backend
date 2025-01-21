@@ -3,7 +3,7 @@ package main
 import (
 	"cvwo-winter-assignment/database"
 	"cvwo-winter-assignment/handlers/auth"
-	"cvwo-winter-assignment/handlers/auth/middleware"
+	"cvwo-winter-assignment/handlers/middleware"
 	"cvwo-winter-assignment/handlers/threads"
 	"cvwo-winter-assignment/initialize"
 	"fmt"
@@ -38,7 +38,18 @@ func main() {
 	router.GET("/threads", threads.GetAllThreads)
 	router.GET("/threads/:id", threads.GetThreadByThreadID)
 	router.PATCH("/threads/:id", middleware.AuthMiddleware(), threads.UpdateThread)
-	//router.DELETE("/threads/:id", middleware.AuthMiddleware(), threads.DeleteThread)
+	router.DELETE("/threads/:id", middleware.AuthMiddleware(), threads.DeleteThread)
+	router.PATCH("/threads/:id/like", threads.LikeThread)
+	router.PATCH("/threads/:id/dislike", threads.DislikeThread)
+
+	// Comment CRUD Routes
+	//router.POST("/comments", middleware.AuthMiddleware(), comments.CreateComments)
+	//router.GET("/comments", comments.GetAllComments)
+	//router.GET("/comments/:id", comments.GetCommentsByCommentID)
+	//router.PATCH("/comments/:id", middleware.AuthMiddleware(), comments.UpdateComments)
+	//router.DELETE("/comments/:id", middleware.AuthMiddleware(), comments.DeleteComment)
+	//router.PATCH("/comments/:id", middleware.AuthMiddleware(), comments.UpdateCommentLikes)
+	//router.PATCH("/comments/:id", middleware.AuthMiddleware(), comments.UpdateCommentDislikes)
 
 	fmt.Printf("Server running on http://localhost:%v", os.Getenv("PORT"))
 
