@@ -36,7 +36,7 @@ func GetAllThreads(c *gin.Context) {
 	/*
 		Unfortunately can't use * as it gives unnecessary info
 	*/
-	query := `SELECT t.ID, t.Title, t.Description, t.user_id,
+	query := `SELECT t.ID, t.Title, t.Content, t.user_id,
 				t.created_at, t.updated_at, t.likes, t.dislikes,
 				c.name AS category
        			FROM threads t 
@@ -69,7 +69,7 @@ func GetAllThreads(c *gin.Context) {
 	var threads []models.Thread
 	for rows.Next() {
 		var thread models.Thread
-		if err := rows.Scan(&thread.ID, &thread.Title, &thread.Description, &thread.UserID,
+		if err := rows.Scan(&thread.ID, &thread.Title, &thread.Content, &thread.UserID,
 			&thread.CreatedAt, &thread.UpdatedAt, &thread.Likes, &thread.Dislikes, &thread.Category); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

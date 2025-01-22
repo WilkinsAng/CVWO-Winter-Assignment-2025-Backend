@@ -1,4 +1,4 @@
-package threads
+package comments
 
 import (
 	"context"
@@ -9,9 +9,9 @@ import (
 	"strconv"
 )
 
-func DeleteThread(c *gin.Context) {
+func DeleteComment(c *gin.Context) {
 	id := c.Param("id")
-	threadID, err := strconv.Atoi(id)
+	commentID, err := strconv.Atoi(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -24,30 +24,28 @@ func DeleteThread(c *gin.Context) {
 	}
 
 	/*
-		Checking if user is the thread owner
+		Checking if user is the comment owner
 	*/
-	err = middleware.ValidateThreadOwnership(threadID, userID.(int))
+	err = middleware.ValidateCommentOwnership(commentID, userID.(int))
 	if err != nil {
 		switch err {
-		case middleware.ErrThreadNotFound:
+		case middleware.ErrCommentNotFound:
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
-		case middleware.ErrUnauthorized:
+		case middleware.ErrUnauthorizedComment:
 			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 			return
 		default:
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "An unexpected error occurred"})
 		}
 	}
-	/*
-		Comments are set to delete by cascade as well
-	*/
-	query := `DELETE FROM threads WHERE id = $1`
-	_, err = database.Conn.Exec(context.Background(), query, threadID)
+	
+	query := `DELETE FROM comments WHERE id = $1`
+	_, err = database.Conn.Exec(context.Background(), query, commentID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to delete thread", "error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to delete comment.", "error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Successfully deleted thread"})
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully deleted comment"})
 }

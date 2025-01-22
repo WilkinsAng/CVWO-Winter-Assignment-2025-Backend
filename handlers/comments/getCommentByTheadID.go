@@ -1,4 +1,4 @@
-package threads
+package comments
 
 import (
 	"context"
@@ -9,7 +9,8 @@ import (
 	"strconv"
 )
 
-func GetThreadByThreadID(c *gin.Context) {
+// Not used for now as Threads does this as well!
+func GetCommentByThreadID(c *gin.Context) {
 	id := c.Param("id")
 	threadID, err := strconv.Atoi(id)
 	if err != nil {
@@ -17,27 +18,11 @@ func GetThreadByThreadID(c *gin.Context) {
 		return
 	}
 
-	var thread models.Thread
-	threadQuery := `SELECT t.ID, t.Title, t.Content, t.user_id,
-					t.created_at, t.updated_at, t.likes, t.dislikes,
-					c.name AS category 
-					FROM threads t
-					LEFT JOIN categories c ON t.category_id = c.id	
-                    WHERE t.id = $1`
-
-	err = database.Conn.QueryRow(context.Background(), threadQuery, threadID).Scan(&thread.ID, &thread.Title, &thread.Content,
-		&thread.UserID, &thread.CreatedAt, &thread.UpdatedAt, &thread.Likes, &thread.Dislikes, &thread.Category)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
 	//get comments
 	commentQuery := `SELECT * FROM comments 
          			WHERE thread_id = $1
          			ORDER BY created_at DESC`
-	rows, err := database.Conn.Query(context.Background(), commentQuery, thread.ID)
+	rows, err := database.Conn.Query(context.Background(), commentQuery, threadID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -56,6 +41,5 @@ func GetThreadByThreadID(c *gin.Context) {
 		comments = append(comments, comment)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"threads": thread,
-		"comments": comments})
+	c.JSON(http.StatusOK, gin.H{"comments": comments})
 }
