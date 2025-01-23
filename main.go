@@ -24,7 +24,7 @@ func main() {
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"}, //Change * to backend when deploying
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
@@ -38,6 +38,7 @@ func main() {
 	router.POST("/threads", middleware.AuthMiddleware(), threads.CreateThread)
 	router.GET("/threads", threads.GetAllThreads)
 	router.GET("/threads/:id", threads.GetThreadByThreadID)
+	router.GET("/users/:userID/threads", threads.GetThreadsByUserID)
 	router.PATCH("/threads/:id", middleware.AuthMiddleware(), threads.UpdateThread)
 	router.DELETE("/threads/:id", middleware.AuthMiddleware(), threads.DeleteThread)
 	router.PATCH("/threads/:id/like", threads.LikeThread)
@@ -46,6 +47,7 @@ func main() {
 	// Comment CRUD Routes
 	router.POST("/threads/:id/comments", middleware.AuthMiddleware(), comments.CreateComment)
 	router.GET("/threads/:id/comments", comments.GetCommentByThreadID)
+	router.GET("/users/:userID/comments", comments.GetCommentsByUserID)
 	router.PATCH("/comments/:id", middleware.AuthMiddleware(), comments.UpdateComment)
 	router.DELETE("/comments/:id", middleware.AuthMiddleware(), comments.DeleteComment)
 	router.PATCH("/comments/:id/like", comments.LikeComment)

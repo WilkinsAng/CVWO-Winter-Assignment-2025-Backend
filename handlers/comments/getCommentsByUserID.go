@@ -9,10 +9,9 @@ import (
 	"strconv"
 )
 
-// Not used for now as Threads does this as well!
-func GetCommentByThreadID(c *gin.Context) {
+func GetCommentsByUserID(c *gin.Context) {
 	id := c.Param("id")
-	threadID, err := strconv.Atoi(id)
+	userID, err := strconv.Atoi(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -20,9 +19,9 @@ func GetCommentByThreadID(c *gin.Context) {
 
 	//get comments
 	commentQuery := `SELECT * FROM comments 
-         			WHERE thread_id = $1
+         			WHERE user_id = $1
          			ORDER BY created_at DESC`
-	rows, err := database.Conn.Query(context.Background(), commentQuery, threadID)
+	rows, err := database.Conn.Query(context.Background(), commentQuery, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
