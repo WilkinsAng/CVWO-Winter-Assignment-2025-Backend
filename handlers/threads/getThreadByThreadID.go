@@ -20,13 +20,13 @@ func GetThreadByThreadID(c *gin.Context) {
 	var thread models.Thread
 	threadQuery := `SELECT t.ID, t.Title, t.Content, t.user_id,
 					t.created_at, t.updated_at, t.likes, t.dislikes,
-					c.name AS category 
+					t.category_id
 					FROM threads t
 					LEFT JOIN categories c ON t.category_id = c.id	
                     WHERE t.id = $1`
 
 	err = database.Conn.QueryRow(context.Background(), threadQuery, threadID).Scan(&thread.ID, &thread.Title, &thread.Content,
-		&thread.UserID, &thread.CreatedAt, &thread.UpdatedAt, &thread.Likes, &thread.Dislikes, &thread.Category)
+		&thread.UserID, &thread.CreatedAt, &thread.UpdatedAt, &thread.Likes, &thread.Dislikes, &thread.CategoryID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

@@ -10,7 +10,7 @@ import (
 )
 
 func GetCommentsByUserID(c *gin.Context) {
-	id := c.Param("id")
+	id := c.Param("userID")
 	userID, err := strconv.Atoi(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

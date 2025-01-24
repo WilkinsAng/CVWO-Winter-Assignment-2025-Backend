@@ -3,6 +3,7 @@ package main
 import (
 	"cvwo-winter-assignment/database"
 	"cvwo-winter-assignment/handlers/auth"
+	"cvwo-winter-assignment/handlers/categories"
 	"cvwo-winter-assignment/handlers/comments"
 	"cvwo-winter-assignment/handlers/middleware"
 	"cvwo-winter-assignment/handlers/threads"
@@ -53,6 +54,8 @@ func main() {
 	router.PATCH("/comments/:id/like", comments.LikeComment)
 	router.PATCH("/comments/:id/dislike", comments.DislikeComment)
 
+	//Get Categories (for now)
+	router.GET("/catogories", categories.GetCategories)
 	fmt.Printf("Server running on http://localhost:%v", os.Getenv("PORT"))
 
 	err := router.Run()
