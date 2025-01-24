@@ -3,12 +3,12 @@ package database
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
 	"os"
 )
 
-var Conn *pgx.Conn
+var Conn *pgxpool.Pool
 
 func ConnectToDB() {
 	host := os.Getenv("DB_HOST")
@@ -19,15 +19,10 @@ func ConnectToDB() {
 
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", user, password, host, port, database)
 	var err error
-	Conn, err = pgx.Connect(context.Background(), dsn)
+	Conn, err = pgxpool.New(context.Background(), dsn)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-
-	/*
-		Commented till i figure out how to stop it from closing immediately
-	*/
-	//defer Conn.Close(context.Background())
 
 	log.Println("Connected to the database!")
 }

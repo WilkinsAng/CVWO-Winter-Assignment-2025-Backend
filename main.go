@@ -55,7 +55,8 @@ func main() {
 	router.PATCH("/comments/:id/dislike", comments.DislikeComment)
 
 	//Get Categories (for now)
-	router.GET("/catogories", categories.GetCategories)
+	router.GET("/categories", categories.GetCategories)
+
 	fmt.Printf("Server running on http://localhost:%v", os.Getenv("PORT"))
 
 	err := router.Run()

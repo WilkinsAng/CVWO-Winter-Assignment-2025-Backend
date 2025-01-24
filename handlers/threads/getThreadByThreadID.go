@@ -33,5 +33,5 @@ func GetThreadByThreadID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"threads": thread})
+	c.JSON(http.StatusOK, gin.H{"thread": thread})
 }

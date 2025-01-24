@@ -47,8 +47,13 @@ func GetAllThreads(c *gin.Context) {
 		else, show all threads
 	*/
 	if categoryStr != "" {
-		query += " WHERE c.name = $3 ORDER BY t.created_at DESC LIMIT $1 OFFSET $2"
-		args = append(args, categoryStr)
+		categoryID, err := strconv.Atoi(categoryStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category number."})
+			return
+		}
+		query += " WHERE t.category_ID = $3 ORDER BY t.created_at DESC LIMIT $1 OFFSET $2"
+		args = append(args, categoryID)
 	} else {
 		query += " ORDER BY t.created_at DESC LIMIT $1 OFFSET $2"
 	}
@@ -75,7 +80,17 @@ func GetAllThreads(c *gin.Context) {
 		threads = append(threads, thread)
 	}
 
+	totalThreads, err := GetNumberOfThreads(categoryStr)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to count threads"})
+		return
+	}
+
+	totalPages := (totalThreads + threadPerPage - 1) / threadPerPage
+
 	c.JSON(http.StatusOK, gin.H{"message": "Threads GET",
-		"threads": threads,
-		"page":    page})
+		"threads":      threads,
+		"page":         page,
+		"totalPages":   totalPages,
+		"totalThreads": totalThreads})
 }
