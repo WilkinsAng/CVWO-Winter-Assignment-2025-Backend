@@ -21,7 +21,7 @@ func GetAllThreads(c *gin.Context) {
 	*/
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
-	categoryStr := c.DefaultQuery("category", "")
+	categoryStr := c.DefaultQuery("categoryID", "")
 
 	if err != nil || page < 1 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page number"})
@@ -82,7 +82,7 @@ func GetAllThreads(c *gin.Context) {
 
 	totalThreads, err := GetNumberOfThreads(categoryStr)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to count threads"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

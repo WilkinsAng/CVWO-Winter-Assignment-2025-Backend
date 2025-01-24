@@ -4,6 +4,8 @@ import (
 	"context"
 	"cvwo-winter-assignment/database"
 	"cvwo-winter-assignment/handlers/middleware"
+	"cvwo-winter-assignment/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -41,9 +43,8 @@ func UpdateThread(c *gin.Context) {
 	}
 
 	var request struct {
-		Title      string `json:"title"`
-		Content    string `json:"content"`
-		CategoryID int    `json:"category_id"`
+		Title   string `json:"title"`
+		Content string `json:"content"`
 	}
 
 	if err = c.ShouldBindJSON(&request); err != nil {
@@ -65,13 +66,23 @@ func UpdateThread(c *gin.Context) {
 
 	query :=
 		`UPDATE threads 
-		 SET title = $1, description = $2, category_id = $3, updated_at = NOW()
-		 WHERE id = $4`
+		 SET title = $1, content = $2, updated_at = NOW()
+		 WHERE id = $3`
 
-	_, err = database.Conn.Exec(context.Background(), query, request.Title, request.Content, request.CategoryID, threadID)
+	_, err = database.Conn.Exec(context.Background(), query, request.Title, request.Content, threadID)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to update thread", "error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"message": "Updated thread successfully!"})
+
+	var thread models.Thread
+	query = `SELECT * FROM threads WHERE id = $1`
+	err = database.Conn.QueryRow(context.Background(), query, threadID).Scan(&thread.ID, &thread.Title, &thread.Content,
+		&thread.UserID, &thread.CreatedAt, &thread.UpdatedAt, &thread.Likes, &thread.Dislikes, &thread.CategoryID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{"message": "Updated thread successfully!", "thread": thread})
 }
