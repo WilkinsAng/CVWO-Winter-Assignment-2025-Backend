@@ -17,7 +17,6 @@ func GetCommentsByUserID(c *gin.Context) {
 		return
 	}
 
-	//get comments
 	commentQuery := `SELECT * FROM comments 
          			WHERE user_id = $1
          			ORDER BY created_at DESC`

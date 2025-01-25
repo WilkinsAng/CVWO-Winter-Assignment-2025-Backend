@@ -18,10 +18,6 @@ func Signup(c *gin.Context) {
 	}
 	_, err := database.Conn.Exec(context.Background(), "INSERT INTO users (username) VALUES ($1)", request.Username)
 	if err != nil {
-		//if err.Error() == `ERROR: duplicate key value violates unique constraint "users_username_key" (SQLSTATE 23505)` {
-		//	c.JSON(http.StatusBadRequest, gin.H{"error": "Username already taken"})
-		//	return
-		//}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

@@ -28,9 +28,6 @@ func CreateComment(c *gin.Context) {
 		return
 	}
 
-	/*
-		Check if comment is empty
-	*/
 	if len(request.Content) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Comment is empty"})
 		return

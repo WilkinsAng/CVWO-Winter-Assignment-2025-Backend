@@ -11,14 +11,8 @@ import (
 
 func GetAllThreads(c *gin.Context) {
 
-	/*
-		Setting number of threads per page to be 10
-	*/
 	const threadPerPage = 10
 
-	/*
-		Getting query data from request
-	*/
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
 	categoryStr := c.DefaultQuery("categoryID", "")
@@ -28,24 +22,15 @@ func GetAllThreads(c *gin.Context) {
 		return
 	}
 
-	/*
-		Calculating offset for page 2 onwards
-	*/
 	offset := (page - 1) * threadPerPage
 
-	/*
-		Unfortunately can't use * as it gives unnecessary info
-	*/
-	query := `SELECT t.ID, t.Title, t.Content, t.user_id,
-				t.created_at, t.updated_at, t.likes, t.dislikes, t.category_ID
-       			FROM threads t`
+	query := `SELECT t.id, t.title, t.content, t.user_id, u.username, t.created_at,
+			t.updated_at, t.likes, t.dislikes, t.category_id
+			FROM threads t
+			LEFT JOIN users u ON t.user_id = u.id`
 
 	args := []interface{}{threadPerPage, offset}
 
-	/*
-		If there is a string in the category, select threads in that category
-		else, show all threads
-	*/
 	if categoryStr != "" {
 		categoryID, err := strconv.Atoi(categoryStr)
 		if err != nil {
@@ -66,13 +51,10 @@ func GetAllThreads(c *gin.Context) {
 
 	defer rows.Close()
 
-	/*
-		Putting threads into a slice
-	*/
 	var threads []models.Thread
 	for rows.Next() {
 		var thread models.Thread
-		if err := rows.Scan(&thread.ID, &thread.Title, &thread.Content, &thread.UserID,
+		if err := rows.Scan(&thread.ID, &thread.Title, &thread.Content, &thread.UserID, &thread.Username,
 			&thread.CreatedAt, &thread.UpdatedAt, &thread.Likes, &thread.Dislikes, &thread.CategoryID); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

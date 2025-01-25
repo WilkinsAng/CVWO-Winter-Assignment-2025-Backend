@@ -23,9 +23,6 @@ func DeleteThread(c *gin.Context) {
 		return
 	}
 
-	/*
-		Checking if user is the thread owner
-	*/
 	err = middleware.ValidateThreadOwnership(threadID, userID.(int))
 	if err != nil {
 		switch err {
@@ -39,9 +36,7 @@ func DeleteThread(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "An unexpected error occurred"})
 		}
 	}
-	/*
-		Comments are set to delete by cascade as well
-	*/
+
 	query := `DELETE FROM threads WHERE id = $1`
 	_, err = database.Conn.Exec(context.Background(), query, threadID)
 	if err != nil {

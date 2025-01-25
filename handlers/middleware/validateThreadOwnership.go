@@ -11,9 +11,6 @@ var (
 	ErrUnauthorized   = errors.New("You are unauthorized to update/delete this thread.")
 )
 
-/*
-Check is user is the owner of the thread, used in update and delete
-*/
 func ValidateThreadOwnership(threadID int, userID int) error {
 
 	var threadOwnerID int

@@ -23,9 +23,6 @@ func DeleteComment(c *gin.Context) {
 		return
 	}
 
-	/*
-		Checking if user is the comment owner
-	*/
 	err = middleware.ValidateCommentOwnership(commentID, userID.(int))
 	if err != nil {
 		switch err {
@@ -39,7 +36,7 @@ func DeleteComment(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "An unexpected error occurred"})
 		}
 	}
-	
+
 	query := `DELETE FROM comments WHERE id = $1`
 	_, err = database.Conn.Exec(context.Background(), query, commentID)
 	if err != nil {

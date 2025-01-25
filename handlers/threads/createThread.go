@@ -17,34 +17,22 @@ func CreateThread(c *gin.Context) {
 		CategoryID int    `json:"category_id"`
 	}
 
-	/*
-		Parsing the Request
-	*/
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	/*
-		Check if thread is empty
-	*/
 	if len(request.Title) == 0 || len(request.Content) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Title or Content is empty"})
 		return
 	}
 
-	/*
-		Auth check
-	*/
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
-	/*
-		Inserting thread
-	*/
 	var threadID int
 
 	fmt.Println(request.CategoryID)
@@ -57,7 +45,7 @@ func CreateThread(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	var thread models.Thread
 	thread.ID = threadID
 	thread.UserID = userID.(int)

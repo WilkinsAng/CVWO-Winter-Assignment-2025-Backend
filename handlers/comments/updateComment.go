@@ -24,9 +24,6 @@ func UpdateComment(c *gin.Context) {
 		return
 	}
 
-	/*
-		Checking if user is the comment owner
-	*/
 	err = middleware.ValidateCommentOwnership(commentID, userID.(int))
 	if err != nil {
 		switch err {
@@ -50,9 +47,6 @@ func UpdateComment(c *gin.Context) {
 		return
 	}
 
-	/*
-		Check if comment is empty
-	*/
 	if len(request.Content) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Comment is empty"})
 		return

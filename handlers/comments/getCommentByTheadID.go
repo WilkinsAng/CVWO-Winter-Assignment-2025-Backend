@@ -9,7 +9,6 @@ import (
 	"strconv"
 )
 
-// Not used for now as Threads does this as well!
 func GetCommentByThreadID(c *gin.Context) {
 	id := c.Param("id")
 	threadID, err := strconv.Atoi(id)
@@ -18,7 +17,6 @@ func GetCommentByThreadID(c *gin.Context) {
 		return
 	}
 
-	//get comments
 	commentQuery := `SELECT * FROM comments 
          			WHERE thread_id = $1
          			ORDER BY created_at DESC`

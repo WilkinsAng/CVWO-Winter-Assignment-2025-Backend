@@ -11,9 +11,6 @@ var (
 	ErrUnauthorizedComment = errors.New("You are unauthorized to update/delete this comment.")
 )
 
-/*
-Check is user is the owner of the comment, used in update and delete
-*/
 func ValidateCommentOwnership(commentID int, userID int) error {
 
 	var commentOwnerID int

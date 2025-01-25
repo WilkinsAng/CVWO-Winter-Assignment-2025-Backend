@@ -24,9 +24,6 @@ func UpdateThread(c *gin.Context) {
 		return
 	}
 
-	/*
-		Checking if user is the thread owner
-	*/
 	err = middleware.ValidateThreadOwnership(threadID, userID.(int))
 	if err != nil {
 		switch err {
@@ -52,17 +49,10 @@ func UpdateThread(c *gin.Context) {
 		return
 	}
 
-	/*
-		Check if thread is empty
-	*/
 	if len(request.Title) == 0 || len(request.Content) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Title or Content is empty"})
 		return
 	}
-
-	/*
-		Updating thread
-	*/
 
 	query :=
 		`UPDATE threads 
