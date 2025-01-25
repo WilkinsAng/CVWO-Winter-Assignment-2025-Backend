@@ -17,9 +17,13 @@ func GetCommentByThreadID(c *gin.Context) {
 		return
 	}
 
-	commentQuery := `SELECT * FROM comments 
-         			WHERE thread_id = $1
-         			ORDER BY created_at DESC`
+	commentQuery := `SELECT c.id, c.thread_id, c.user_id, u.username,
+       				c.content, c.likes, c.dislikes, c.created_at
+         			FROM comments c
+         			INNER JOIN users u ON c.user_id = u.id
+         			WHERE c.thread_id = $1
+         			ORDER BY c.created_at DESC`
+
 	rows, err := database.Conn.Query(context.Background(), commentQuery, threadID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -29,8 +33,8 @@ func GetCommentByThreadID(c *gin.Context) {
 	var comments []models.Comment
 	for rows.Next() {
 		var comment models.Comment
-		err = rows.Scan(&comment.ID, &comment.ThreadID, &comment.UserID, &comment.Content,
-			&comment.Likes, &comment.Dislikes, &comment.CreatedAt)
+		err = rows.Scan(&comment.ID, &comment.ThreadID, &comment.UserID, &comment.Username,
+			&comment.Content, &comment.Likes, &comment.Dislikes, &comment.CreatedAt)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

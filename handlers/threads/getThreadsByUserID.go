@@ -21,8 +21,8 @@ func GetThreadsByUserID(c *gin.Context) {
        				t.updated_at, t.likes, t.dislikes, t.category_id
 					FROM threads t
 					LEFT JOIN users u ON t.user_id = u.id
-					ORDER BY t.created_at DESC
-                    WHERE t.user_id = $1`
+					WHERE t.user_id = $1
+					ORDER BY t.created_at DESC`
 
 	rows, err := database.Conn.Query(context.Background(), threadQuery, userID)
 

@@ -15,6 +15,7 @@ func CreateThread(c *gin.Context) {
 		Title      string `json:"title"`
 		Content    string `json:"content"`
 		CategoryID int    `json:"category_id"`
+		Username   string `json:"username"`
 	}
 
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -35,7 +36,6 @@ func CreateThread(c *gin.Context) {
 
 	var threadID int
 
-	fmt.Println(request.CategoryID)
 	query := `INSERT INTO threads (title, content, user_id, category_id) 
 				VALUES ($1, $2, $3, $4) RETURNING id`
 
@@ -53,5 +53,6 @@ func CreateThread(c *gin.Context) {
 	thread.Title = request.Title
 	thread.Content = request.Content
 	thread.CreatedAt = time.Now()
+	thread.Username = request.Username
 	c.JSON(http.StatusCreated, gin.H{"message": "Thread Created", "thread": thread})
 }
