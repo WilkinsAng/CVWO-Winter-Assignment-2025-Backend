@@ -4,6 +4,7 @@ import (
 	"context"
 	"cvwo-winter-assignment/database"
 	"cvwo-winter-assignment/handlers/middleware"
+	"cvwo-winter-assignment/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -66,5 +67,14 @@ func UpdateComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to update comment", "error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Comment updated successfully!"})
+
+	var comment models.Comment
+	query = `SELECT * FROM comments WHERE id = $1`
+	err = database.Conn.QueryRow(context.Background(), query, commentID).Scan(&comment.ID, &comment.ThreadID, &comment.UserID, &comment.Content,
+		&comment.Likes, &comment.Dislikes, &comment.CreatedAt)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Comment updated successfully!", "comment": comment})
 }

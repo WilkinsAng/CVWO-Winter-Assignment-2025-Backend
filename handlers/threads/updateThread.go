@@ -5,7 +5,6 @@ import (
 	"cvwo-winter-assignment/database"
 	"cvwo-winter-assignment/handlers/middleware"
 	"cvwo-winter-assignment/models"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -43,8 +42,9 @@ func UpdateThread(c *gin.Context) {
 	}
 
 	var request struct {
-		Title   string `json:"title"`
-		Content string `json:"content"`
+		Title      string `json:"title"`
+		Content    string `json:"content"`
+		CategoryID int    `json:"category_id"`
 	}
 
 	if err = c.ShouldBindJSON(&request); err != nil {
@@ -66,12 +66,11 @@ func UpdateThread(c *gin.Context) {
 
 	query :=
 		`UPDATE threads 
-		 SET title = $1, content = $2, updated_at = NOW()
-		 WHERE id = $3`
+		 SET title = $1, content = $2, category_id= $3, updated_at = NOW()
+		 WHERE id = $4`
 
-	_, err = database.Conn.Exec(context.Background(), query, request.Title, request.Content, threadID)
+	_, err = database.Conn.Exec(context.Background(), query, request.Title, request.Content, request.CategoryID, threadID)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to update thread", "error": err.Error()})
 		return
 	}
