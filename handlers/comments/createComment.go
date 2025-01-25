@@ -3,9 +3,11 @@ package comments
 import (
 	"context"
 	"cvwo-winter-assignment/database"
+	"cvwo-winter-assignment/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func CreateComment(c *gin.Context) {
@@ -50,5 +52,12 @@ func CreateComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"message": "Comment Created", "comment_id": commentID})
+
+	var comment models.Comment
+	comment.ID = commentID
+	comment.Content = request.Content
+	comment.ThreadID = threadID
+	comment.UserID = userID.(int)
+	comment.CreatedAt = time.Now()
+	c.JSON(http.StatusCreated, gin.H{"message": "Comment Created", "comment": comment})
 }
