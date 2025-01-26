@@ -35,7 +35,7 @@ An interactive fitness forum that allows users to share their fitness journeys, 
 ## Live Demo
 
 - **Deployed Website**: https://cvwo-winter-assignment2025-frontend.vercel.app
-
+- **Note**: Render will temporarily spin down the backend instance when it is inactive, which can delay requests by 50 seconds or more. Please wait for a moment for it to boot up.
 ---
 
 ## Getting Started
