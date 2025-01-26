@@ -49,7 +49,7 @@ An interactive fitness forum that allows users to share their fitness journeys, 
 ---
 
 ## Setup Instructions
-As render only hosts postgresSQL database for 30 days, here are setup instructions if the demo does not work.
+As render only hosts postgresSQL database for 30 days, here are setup instructions if the demo does not work. It expires on February 25, 2025.
 
 ### 1. Clone the Both Back & Frontend Repository:
 ```bash
