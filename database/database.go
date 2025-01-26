@@ -11,13 +11,8 @@ import (
 var Conn *pgxpool.Pool
 
 func ConnectToDB() {
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	database := os.Getenv("DB_NAME")
 
-	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", user, password, host, port, database)
+	dsn := fmt.Sprintf(os.Getenv("DATABASE_URL"))
 	var err error
 	Conn, err = pgxpool.New(context.Background(), dsn)
 	if err != nil {
